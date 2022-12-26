@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, create_engine,DateTime,Da
+from sqlalchemy import Column, String, create_engine,DateTime
 from flask_sqlalchemy import SQLAlchemy
 import json
 import datetime
@@ -110,7 +110,7 @@ class Movie(db.Model):
     id = Column(db.Integer, primary_key=True)
     title=Column(String,nullable=False)
     type_id=Column(db.Integer,db.ForeignKey("movie_type.id"),nullable=False)
-    performance=db.relationship("Performance",bacref="movie",lazy=True)
+    performance=db.relationship("Performance",backref="movie",lazy=True)
 
     def __init__(self,title,type_id):
         self.title=title
