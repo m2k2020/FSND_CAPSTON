@@ -1,5 +1,5 @@
 import os
-from flask import Flask,abort
+from flask import Flask,abort,jsonify
 from models import *
 from flask_cors import CORS
 from auth import requires_auth,AuthError
@@ -65,7 +65,44 @@ def create_app(test_config=None):
     @app.post("/actor")
     def add_actor():
         pass
-    
+
+    """
+    Error Handlers:
+    404
+    402
+    400
+    422
+    """
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+                      "success": False, 
+                      "error": 422,
+                      "message": ""
+                      }), 422
+
+    @app.errorhandler(400)
+    def bad_request(error):
+      return jsonify({
+                      "success": False, 
+                      "error": 400,
+                      "message": ""
+                      }), 400
+
+    @app.errorhandler(404)
+    def ressource_not_found(error):
+        return jsonify({
+                        "success": False, 
+                        "error": 404,
+                        "message": ""
+                        }), 404
+
+    @app.errorhandler(AuthError)
+    def auth_error(error):
+        return jsonify({
+            "success": False, 
+            "error": 401, 
+            "message":"Unauthorized"}), 401
 
     return app
 
