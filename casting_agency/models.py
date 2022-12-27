@@ -47,6 +47,7 @@ class Actor(db.Model):
         self.nationality=nationality
 
     def format(self):
+        
         return {
             "id": self.id, 
             "name": self.name, 
