@@ -16,6 +16,17 @@ auth0_config = {
 }
 
 
+
+"""
+DATABASE Connection and Configrations throught Postgress and my sql server
+"""
+database_setup = {
+   "database_name" : "casting_db",#database Name here
+   "user_name" : "postgres", # default postgres user name
+   "password" : "admin", # if applicable. If no password, just type in None
+   "port" : "localhost:5432" # default postgres port
+}
+
 # bearer_tokens = {
 #     "casting_assistant" : "Bearer ",
 #     "executive_producer" : "Bearer ",
