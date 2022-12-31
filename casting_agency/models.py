@@ -1,12 +1,13 @@
 import os
 from sqlalchemy import Column, String, create_engine,DateTime
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from config import database_setup
 import json
 import datetime
 
-database_path = os.environ["DATABASE_URL"]
-if database_path.startswith("postgres://"):
-    database_path = database_path.replace("postgres://", "postgresql://", 1)
+database_path = os.environ.get('DATABASE_URL', "postgresql://{}:{}@{}/{}".format(database_setup["user_name"], database_setup["password"], database_setup["port"], database_setup["database_name"]))
+
 
 db = SQLAlchemy()
 
@@ -21,7 +22,8 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
+    # db.create_all()
+    Migrate(app,db)
 
 
 """
@@ -36,14 +38,14 @@ class Actor(db.Model):
     id = Column(db.Integer, primary_key=True)
     name = Column(String,nullable=False)
     gender = Column(String,nullable=False)
-    date_birth=Column(DateTime,nullable=False)
+    age=Column(db.Integer,nullable=False)
     nationality=Column(String(length=100),nullable=False)
     performance=db.relationship("Performance",backref="actor",lazy=True)
 
-    def __init__(self, name, gender,date_birth,nationality):
+    def __init__(self, name, gender,age,nationality):
         self.name = name
         self.gender = gender
-        self.date_birth=date_birth
+        self.age=age
         self.nationality=nationality
 
     def format(self):
@@ -52,7 +54,7 @@ class Actor(db.Model):
             "id": self.id, 
             "name": self.name, 
             "gender": self.gender,
-            "data_birth":self.date_birth,
+            "age":self.age,
             "nationality":self.nationality
             }
     def insert(self):
@@ -113,7 +115,7 @@ class Movie(db.Model):
     type_id=Column(db.Integer,db.ForeignKey("movie_type.id"),nullable=False)
     performance=db.relationship("Performance",backref="movie",lazy=True)
 
-    def __init__(self,title,type_id):
+    def __init__(self,title,type_id,):
         self.title=title
         self.type_id=type_id
 
