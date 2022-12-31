@@ -66,8 +66,8 @@ def create_app(test_config=None):
     data returns{"success"":True,"actors":list_actors}
     """
     @app.get("/actor")
-    @requires_auth("get:actor")
-    def get_all_actors(jwt):
+    # @requires_auth("get:actor")
+    def get_all_actors():
         actors=Actor.query.order_by(Actor.id).all()
         if actors is None:
             abort(404)
