@@ -59,12 +59,7 @@ def create_app(test_config=None):
     """
     
     #region getting All lists
-    """
-    endpoint GET /actor
-    Geting All List Of actors
-    permission 'get:actor'
-    data returns{"success"":True,"actors":list_actors}
-    """
+  
     @app.get("/actor")
     # @requires_auth("get:actor")
     def get_all_actors():
@@ -262,13 +257,23 @@ def create_app(test_config=None):
     #endregion
    
    
+  
     """
-    Implanments endpoint PATCH /actor/<id>
-    Permission 'patch:actor'
-    return {"success":True,"message":"Updated Actor"}
+    Here is Starting PATCH Region
+    endpoints: 
+                1. PATCH /actor
+                2. PATCH /movie_type
+                3. PATCH /movie
+                4. PATCH /performance
+    permissions: 
+                1. 'patch:actor'
+                2. 'patch:movietype'
+                3. 'patch:movie'
+                4. 'patch:performance'
+
     """
 
-  
+  #region Modifiying To Database
   
     @app.patch("/actor/<actor_id>")
     @requires_auth('patch:actor')
@@ -299,7 +304,95 @@ def create_app(test_config=None):
             "success":True,
             "message":"successfuly Updated"
             }
+    
 
+    @app.patch("/movie_type/<type_id>")
+    @requires_auth('patch:movietype')
+    def modify_actor(jwt,type_id):
+        
+        body=request.get_json()
+
+        if not body:
+            abort(400)
+
+        update_type=MovieType.query.filter(MovieType.id == type_id).one_or_none()
+
+        if update_type is None:
+            abort(404)
+
+        type=body.get("type",update_type.type)
+      
+
+        update_type.type=type
+     
+        update_type.update()
+        return{
+            "success":True,
+            "message":"successfuly Updated"
+            }
+
+
+  
+    @app.patch("/movie/<movie_id>")
+    @requires_auth('patch:movie')
+    def modify_actor(jwt,movie_id):
+        
+        body=request.get_json()
+
+        if not body:
+            abort(400)
+
+        update_actor=Actor.query.filter(Actor.id == actor_id).one_or_none()
+
+        if update_actor is None:
+            abort(404)
+
+        name=body.get("name",update_actor.name)
+        gender=body.get("gender",update_actor.gender)
+        age=body.get("age",update_actor.age)
+        nationality=body.get("nationality",update_actor.nationality)
+
+        update_actor.name=name
+        update_actor.gender=gender
+        update_actor.age=age
+        update_actor.nationality=nationality
+
+        update_actor.update()
+        return{
+            "success":True,
+            "message":"successfuly Updated"
+            }
+    
+        
+    @app.patch("/movie_type/<type_id>")
+    @requires_auth('patch:movietype')
+    def modify_actor(jwt,type_id):
+        
+        body=request.get_json()
+
+        if not body:
+            abort(400)
+
+        update_type=MovieType.query.filter(MovieType.id == type_id).one_or_none()
+
+        if update_type is None:
+            abort(404)
+
+        type=body.get("type",update_type.type)
+      
+
+        update_type.type=type
+     
+        update_type.update()
+        return{
+            "success":True,
+            "message":"successfuly Updated"
+            }
+
+
+
+
+    #endregion
     """
     Here is Starting Deleting Region
     endpoints: 
