@@ -61,8 +61,8 @@ def create_app(test_config=None):
     #region getting All lists
   
     @app.get("/actor")
-    # @requires_auth("get:actor")
-    def get_all_actors():
+    @requires_auth("get:actor")
+    def get_all_actors(jwt):
         actors=Actor.query.order_by(Actor.id).all()
         if actors is None:
             abort(404)
@@ -333,57 +333,56 @@ def create_app(test_config=None):
 
 
   
-    @app.patch("/movie/<movie_id>")
+    @app.patch("/movie/<id>")
     @requires_auth('patch:movie')
-    def modify_actor(jwt,movie_id):
+    def modify_actor(jwt,id):
         
         body=request.get_json()
 
         if not body:
             abort(400)
 
-        update_actor=Actor.query.filter(Actor.id == actor_id).one_or_none()
+        update_movie=Movie.query.filter(Movie.id == id).one_or_none()
 
-        if update_actor is None:
+        if update_movie is None:
             abort(404)
 
-        name=body.get("name",update_actor.name)
-        gender=body.get("gender",update_actor.gender)
-        age=body.get("age",update_actor.age)
-        nationality=body.get("nationality",update_actor.nationality)
+        title=body.get("title",update_movie.title)
+        type_id=body.get("type_id",update_movie.type_id)
 
-        update_actor.name=name
-        update_actor.gender=gender
-        update_actor.age=age
-        update_actor.nationality=nationality
-
-        update_actor.update()
+        update_movie.title=title
+        update_movie.type_id=type_id
+        
+        update_movie.update()
         return{
             "success":True,
             "message":"successfuly Updated"
             }
     
         
-    @app.patch("/movie_type/<type_id>")
-    @requires_auth('patch:movietype')
-    def modify_actor(jwt,type_id):
+    @app.patch("/performance/<id>")
+    @requires_auth('patch:performance')
+    def modify_actor(jwt,id):
         
         body=request.get_json()
 
         if not body:
             abort(400)
 
-        update_type=MovieType.query.filter(MovieType.id == type_id).one_or_none()
+        update_performance=Performance.query.filter(Performance.id == id).one_or_none()
 
-        if update_type is None:
+        if update_performance is None:
             abort(404)
 
-        type=body.get("type",update_type.type)
-      
+        actor_id=body.get("actor_id",update_performance.actor_id)
+        movie_id=body.get("movie_id",update_performance.movie_id)
+        release_date=body.get("release_date",update_performance.release_date)
 
-        update_type.type=type
-     
-        update_type.update()
+        update_performance.actor_id=actor_id
+        update_performance.movie_id=movie_id
+        update_performance.release_date=release_date
+
+        update_performance.update()
         return{
             "success":True,
             "message":"successfuly Updated"
